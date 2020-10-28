@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFProjectionRepro.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20201023091111_Initial")]
+    [Migration("20201028145416_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,12 +54,15 @@ namespace EFProjectionRepro.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("EntityId");
 
-                            b1.OwnsOne("EFProjectionRepro.Owned", "Owned", b2 =>
+                            b1.OwnsMany("EFProjectionRepro.Owned", "Owned", b2 =>
                                 {
                                     b2.Property<int>("ChildEntityId")
                                         .HasColumnType("int");
 
                                     b2.Property<int>("ChildId")
+                                        .HasColumnType("int");
+
+                                    b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
                                         .HasColumnType("int")
                                         .UseIdentityColumn();
@@ -67,9 +70,9 @@ namespace EFProjectionRepro.Migrations
                                     b2.Property<string>("Value")
                                         .HasColumnType("nvarchar(max)");
 
-                                    b2.HasKey("ChildEntityId", "ChildId");
+                                    b2.HasKey("ChildEntityId", "ChildId", "Id");
 
-                                    b2.ToTable("Child");
+                                    b2.ToTable("Owned");
 
                                     b2.WithOwner()
                                         .HasForeignKey("ChildEntityId", "ChildId");

@@ -21,7 +21,7 @@ namespace EFProjectionRepro
             {
                 cfg.OwnsMany(e => e.Children, inner =>
                 {
-                    inner.OwnsOne(e => e.Owned);
+                    inner.OwnsMany(e => e.Owned);
                 });
             });
         }
@@ -37,7 +37,7 @@ namespace EFProjectionRepro
     {
         public int Id { get; set; }
         public int Type { get; set; }
-        public Owned Owned { get; set; }
+        public List<Owned> Owned { get; set; }
     }
 
     public class Owned

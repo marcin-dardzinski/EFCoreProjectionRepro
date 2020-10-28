@@ -25,8 +25,7 @@ namespace EFProjectionRepro.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EntityId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Owned_Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Type = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,10 +37,34 @@ namespace EFProjectionRepro.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Owned",
+                columns: table => new
+                {
+                    ChildEntityId = table.Column<int>(type: "int", nullable: false),
+                    ChildId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Owned", x => new { x.ChildEntityId, x.ChildId, x.Id });
+                    table.ForeignKey(
+                        name: "FK_Owned_Child_ChildEntityId_ChildId",
+                        columns: x => new { x.ChildEntityId, x.ChildId },
+                        principalTable: "Child",
+                        principalColumns: new[] { "EntityId", "Id" },
+                        onDelete: ReferentialAction.Cascade);
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Owned");
+
             migrationBuilder.DropTable(
                 name: "Child");
 
